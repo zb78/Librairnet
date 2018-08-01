@@ -68,10 +68,19 @@ public class Controller extends HttpServlet {
 
         //----------JULIEN-------------------//
         String url = "/WEB-INF/index.jsp";
+        
+        if (session.getAttribute("page") == null) {
+            session.setAttribute("page", "/WEB-INF/index.jsp");
+        }
+        if (session.getAttribute("page") == "/WEB-INF/identification.jsp") {
+            session.setAttribute("page", "/WEB-INF/index.jsp");
+        }
+        
 
         // String url = "WEB-INF/Catalogue.jsp";
         if ("catalogue".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Catalogue.jsp";
+            session.setAttribute("page", url);
         }
         Livre monLivre = (Livre) request.getAttribute("livre");
         LigneCommande maLigne = (LigneCommande) request.getAttribute("ligne");
@@ -99,10 +108,12 @@ public class Controller extends HttpServlet {
 
         if ("panier".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Panier.jsp";
+            session.setAttribute("page", url);
         }
 
         if ("paiement".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Paiement.jsp";
+            session.setAttribute("page", url);
         }
 
         if (request.getParameter("plus") != null) {
@@ -142,6 +153,7 @@ public class Controller extends HttpServlet {
 //        }
         if (request.getParameter("all") != null) {
             url = "/WEB-INF/all.jsp";
+            session.setAttribute("page", url);
             Search sr = new Search();
             //ServletContext application = this.getServletContext();
             //Connexion con = (Connexion) application.getAttribute("connection");
@@ -151,6 +163,7 @@ public class Controller extends HttpServlet {
 
         if (request.getParameter("recherche") != null) {
             url = "/WEB-INF/all.jsp";
+            session.setAttribute("page", url);
             Search sr = new Search();
             //ServletContext application = this.getServletContext();
             //Connexion con = (Connexion) application.getAttribute("connection");
@@ -201,9 +214,8 @@ public class Controller extends HttpServlet {
 //            session.setAttribute("isconnected", false);
 //        }
         //-----------------------FIN YAVUZ------------//
-        String getUrl = null;
+        
         if (request.getParameter("connection") != null) {
-            
             url = "/WEB-INF/Identification.jsp";
         }
         //-----------------------MOMO-----------------//
@@ -232,7 +244,8 @@ public class Controller extends HttpServlet {
         if (request.getParameter("doIt") != null) {
             session.setAttribute("isconnected", false);
             if (i == 0) {
-                url = url;
+                System.out.println("page vaut " + session.getAttribute("page"));
+                url = session.getAttribute("page").toString();
                 session.setAttribute("isconnected", true);
                 welcome = request.getParameter("login");
                 request.setAttribute("welcome", welcome);
@@ -257,6 +270,7 @@ public class Controller extends HttpServlet {
 
                     ccc.setMaxAge(1 * 60);
                     url = "/WEB-INF/jspFatalError.jsp";
+                    session.setAttribute("page", url);
                     request.setAttribute("fatalerror", "Erreur trop de tentatives de connexion !!!");
                 }
                 response.addCookie(ccc);
@@ -269,15 +283,15 @@ public class Controller extends HttpServlet {
         Cookie cccc = getCookie(request.getCookies(), "try");
         if (cccc != null) {
             if (cccc.getValue().length() > 3) {
-
                 url = "/WEB-INF/jspFatalError.jsp";
-
+                session.setAttribute("page", url);
                 request.setAttribute("fatalerror", "Erreur trop de tentatives de connexion !!!!");
             }
         }
         if (request.getParameter("deconnect") != null) {
             session.removeAttribute("client");
             session.setAttribute("isconnected", false);
+            url = session.getAttribute("page").toString();
             if (cc != null) {
                 login = cc.getValue();
             }
@@ -295,9 +309,11 @@ public class Controller extends HttpServlet {
         }
         if (request.getParameter("inscription") != null) {
             url = "/WEB-INF/Inscription.jsp";
+            session.setAttribute("page", url);
         }
         if (request.getParameter("regdoIt") != null) {
             url = "/WEB-INF/Inscription.jsp";
+            session.setAttribute("page", url);
             Client ins = new Client();
             String nom = request.getParameter("nom");
             try {
@@ -349,12 +365,13 @@ public class Controller extends HttpServlet {
         if (request.getParameter("validCom") != null) {
             if (session.getAttribute("client") != null) {
                 url = "/WEB-INF/Paiement.jsp";
+                session.setAttribute("page", url);
             } else {
                 url = "/WEB-INF/Identification.jsp";
-                message = "Veuillez vous connecter pour valider votre panier";
+                request.setAttribute("message", "Veuillez vous connecter pour valider votre panier");
             }
         }
-        
+        System.out.println("page vaut " + session.getAttribute("page"));
         request.getRequestDispatcher(url).include(request, response);
 
     }
