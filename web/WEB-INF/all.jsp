@@ -36,7 +36,7 @@
                         <p class="card-text">${l.sousTitre}</p>
 
                     </div>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#a${l.isbn}"><i class="fa fa-search"></i><span class="glyphicon glyphicon-eye-open"></span> Détaille</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#a${l.isbn}"><i class="fa fa-search"></i><span class="glyphicon glyphicon-eye-open"></span> Decription</button>
                     <a href="Controller?add=${l.isbn}" class="btn btn-primary"><span class="glyphicon  glyphicon-shopping-cart"></span> Ajouter au panier</a>
                 </div>
 

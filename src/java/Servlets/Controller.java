@@ -89,17 +89,12 @@ public class Controller extends HttpServlet {
             panier = new Commande();
             session.setAttribute("panier", panier);
         }
-
         if (request.getParameter("add") != null) {
             monLivre = new Livre(request.getParameter("add"), con);
             maLigne.add(monLivre);
             //maLigne = new LigneCommande(request.getParameter("livre"), monLivre.getPrix(), monLivre.getEvt().getEveRemise(), monLivre.getTaux().getTva());
             panier.add(maLigne);
             session.setAttribute("panier", panier);
-            System.out.println(session.getAttribute("panier"));
-            System.out.println("isbn = " + request.getParameter("add"));
-            System.out.println("panier = " + panier.getLigneCommande(request.getParameter("add")));
-
         }
 
         if ("panier".equals(request.getParameter("section"))) {
@@ -109,15 +104,7 @@ public class Controller extends HttpServlet {
         if ("paiement".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Paiement.jsp";
         }
-//        if (request.getParameter("add") != null) {
-//            Livre liv = new Livre(request.getParameter("add"), con);
-//            
-//            monLivre = Search.getLivre(request.getParameter("livre"));
-//            maLigne = new LigneCommande(request.getParameter("livre"), monLivre.getPrix(), monLivre.getEvt().getEveRemise(), monLivre.getTaux().getTva());
-//            maLigne.setMonLivre(monLivre);
-//            panier.add(maLigne);
-//
-//        }
+
         if (request.getParameter("plus") != null) {
             maLigne = panier.getLigneCommande(request.getParameter("isbnLigne"));
             panier.add(maLigne);
@@ -140,6 +127,7 @@ public class Controller extends HttpServlet {
         request.setAttribute("totHT", panier.prixTotalHt());
         request.setAttribute("totTTC", panier.prixTotalTtc());
         request.setAttribute("totRemise", panier.getRemiseTot());
+        
 
         if (request.getParameter("valider") != null) {
 
@@ -234,7 +222,7 @@ public class Controller extends HttpServlet {
         String login = "";
         if (login != null && password != null) {
             i = cl.LoginValide(request.getParameter("login"), request.getParameter("password"), conect);
-            System.out.println("cl = "+cl.getCliPrenom() + cl.getCliNom());
+            System.out.println("cl = " +cl);
                 session.setAttribute("client", cl);
         }
 
@@ -288,7 +276,7 @@ public class Controller extends HttpServlet {
             }
         }
         if (request.getParameter("deconnect") != null) {
-            session.getAttribute("client");
+            session.removeAttribute("client");
             session.setAttribute("isconnected", false);
             if (cc != null) {
                 login = cc.getValue();
@@ -358,8 +346,16 @@ public class Controller extends HttpServlet {
         }
         
         //----------------------FIN MOMO--------------//
+        if (request.getParameter("validCom") != null) {
+            if (session.getAttribute("client") != null) {
+                url = "/WEB-INF/Paiement.jsp";
+            } else {
+                url = "/WEB-INF/Identification.jsp";
+                message = "Veuillez vous connecter pour valider votre panier";
+            }
+        }
+        
         request.getRequestDispatcher(url).include(request, response);
-        System.out.println("url = "+url);
 
     }
 

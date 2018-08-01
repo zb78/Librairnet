@@ -1,13 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<div>
-    <c:if test="${isconnected}">
-        Bienvenue ${client.nom} ${client.prenom} <a href="Controller?deconnection">se déconnecter</a>
-    </c:if>
-    <c:if test="${!isconnected}">
-        <a href="Controller?connection">se connecter</a>
-    </c:if>
-</div>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#"><img src="images/librairnet.png" width="50" height="50" alt=""></a>
 
@@ -18,19 +11,27 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="Controller?all">Afficher tout les livres <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="index.jsp">Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="index.jsp">Accueil</a>
+                <a class="nav-link" href="Controller?section=panier">Afficher le panier <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <c:if test="${isconnected}">
+                    <span class="nav-link"> Bienvenue ${client.cliPrenom} ${client.cliNom} <a  href="Controller?deconnect">se déconnecter</a></span>
+                </c:if>
+                <c:if test="${!isconnected}">
+                    <a class="nav-link" href="Controller?connection">se connecter</a>
+                </c:if>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dropdown
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    
+
                     <a class="dropdown-item" href="Controller?section=panier">panier</a>
-                    <input type="submit" value="panierbutton" />
+
                     <a class="dropdown-item" href="#">Another action</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>

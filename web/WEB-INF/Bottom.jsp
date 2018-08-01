@@ -11,16 +11,16 @@
         <img class="navbar-brand" src="images/librairnet.png" width="45" height="45" alt="minilogo"/>
 
         <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/QuiSommesNous.html">Qui sommes-nous?</a></li>
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/Paiement.html">Paiement</a></li>
+            <li class="nav-item"><a class="nav-link" href="QuiSommesNous.html">Qui sommes-nous?</a></li>
+            <li class="nav-item"><a class="nav-link" href="Paiement.html">Paiement</a></li>
         </ul>
         <ul  class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/CGV.html">Conditions générales de vente</a></li>
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/Contact.html">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="CGV.html">Conditions générales de vente</a></li>
+            <li class="nav-item"><a class="nav-link" href="Contact.html">Contact</a></li>
         </ul>
         <ul  class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/Livraison.html">Livraison</a></li>
-            <li class="nav-item"><a class="nav-link" href="/LibrairnetWeb/Mentions.html">Mentions</a></li>
+            <li class="nav-item"><a class="nav-link" href="Livraison.html">Livraison</a></li>
+            <li class="nav-item"><a class="nav-link" href="Mentions.html">Mentions</a></li>
         </ul>
 
         </nav>

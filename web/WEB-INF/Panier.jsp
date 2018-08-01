@@ -7,11 +7,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Librairnet</title>
         <%@include file="/WEB-INF/nav.jsp" %>
-        <jsp:include page="Header.jsp"></jsp:include>
         </head>
         <body>
             <div class="container">
-                <h5>Accueil > <a style="color: black" href="Controller?section=catalogue">Catalogue</a> > <a style="color: black" href = "Controller?section=panier">Panier</a></h5>
+                <h5><a style="color: black" href="Controller?all">Accueil > <a style="color: black" href="Controller?all">Catalogue</a> > <a style="color: black" href = "Controller?section=panier">Panier</a></h5>
                 <hr>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
                 <link rel="stylesheet" href="css/css.css">
@@ -50,16 +49,16 @@
                             <div class="col-md-1">
                                 <div class="couv"><img src="${lp.monLivre.couverture}" width="50" height="77"/></div>
                                     <c:if test="${lp.monLivre.evt.eveRemise == 10.0}">
-                                    <div class="dix"><img src="/LibrairnetWeb/Images/10.png" /></div>
+                                    <div class="dix"><img src="images/10.png" /></div>
                                     </c:if>
                                     <c:if test="${lp.monLivre.evt.eveRemise == 20.0}">
-                                    <div class="vingt"><img src="/LibrairnetWeb/Images/20.png" /></div>
+                                    <div class="vingt"><img src="images/20.png" /></div>
                                     </c:if>
                                     <c:if test="${lp.monLivre.evt.eveRemise == 30.0}">
-                                    <div class="trente"><img src="/LibrairnetWeb/Images/30.png" /></div>
+                                    <div class="trente"><img src="images/30.png" /></div>
                                     </c:if>
                                     <c:if test="${lp.monLivre.evt.eveRemise == 40.0}">
-                                    <div class="quarante"><img src="/LibrairnetWeb/Images/40.png" /></div>
+                                    <div class="quarante"><img src="images/40.png" /></div>
                                     </c:if>
                             </div>
                             <div class="col-md-4">
