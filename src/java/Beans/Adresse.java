@@ -2,6 +2,7 @@ package Beans;
 
 import Classes.LibExceptions;
 import Classes.mesOutils;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
-public class Adresse {
+public class Adresse implements Serializable{
 
     private int adrId;
     private String adrNom;
@@ -27,6 +28,19 @@ public class Adresse {
 
     public Adresse() {
     }
+
+    public Adresse(int adrId,String adrNumVoie, String adrTypeVoie, String adrNomVoie, String adrCompVoie, String adrCodePostal, String adrVille, String adrPays) {
+        this.adrId = adrId;
+        this.adrNumVoie = adrNumVoie;
+        this.adrTypeVoie = adrTypeVoie;
+        this.adrNomVoie = adrNomVoie;
+        this.adrCompVoie = adrCompVoie;
+        this.adrCodePostal = adrCodePostal;
+        this.adrVille = adrVille;
+        this.adrPays = adrPays;
+    }
+    
+    
 
     public Adresse(int adrId, String adrNom, String adrPrenom, String adrNumVoie, String adrTypeVoie, String adrNomVoie, String adrCompVoie, String adrCodePostal, String adrVille, String adrPays, String adrLibele, int adrStatut) {
         this.adrId = adrId;

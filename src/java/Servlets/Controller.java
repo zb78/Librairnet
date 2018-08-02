@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.BeanCatalogue;
+import Beans.Adresse;
 import Beans.BeanConnexion;
 import Beans.Client;
 import Beans.Commande;
@@ -17,6 +17,7 @@ import Classes.LibExceptions;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
@@ -68,14 +69,13 @@ public class Controller extends HttpServlet {
 
         //----------JULIEN-------------------//
         String url = "/WEB-INF/index.jsp";
-        
+
         if (session.getAttribute("page") == null) {
             session.setAttribute("page", "/WEB-INF/index.jsp");
         }
         if (session.getAttribute("page") == "/WEB-INF/identification.jsp") {
             session.setAttribute("page", "/WEB-INF/index.jsp");
         }
-        
 
         // String url = "WEB-INF/Catalogue.jsp";
         if ("catalogue".equals(request.getParameter("section"))) {
@@ -85,7 +85,12 @@ public class Controller extends HttpServlet {
         Livre monLivre = (Livre) request.getAttribute("livre");
         LigneCommande maLigne = (LigneCommande) request.getAttribute("ligne");
         Commande panier = (Commande) session.getAttribute("panier");
-        BeanCatalogue catalogue = (BeanCatalogue) request.getAttribute("catalogue");
+        Client cl = (Client) session.getAttribute("client");
+        ArrayList<Adresse> adrlivr = new ArrayList();
+        if (cl == null) {
+            cl = new Client();
+            request.setAttribute("client", cl);
+        }
         if (monLivre == null) {
             monLivre = new Livre();
             request.setAttribute("livre", monLivre);
@@ -133,16 +138,12 @@ public class Controller extends HttpServlet {
         }
         request.setAttribute("isEmpty", panier.isEmpty());
         request.setAttribute("listePanier", panier.getPanier());
-        request.setAttribute("listeLivres", panier.listerLivrePanier(catalogue));
+        //request.setAttribute("listeLivres", panier.listerLivrePanier(catalogue));
         request.setAttribute("nbarticle", panier.quantiteTotal());
+
         request.setAttribute("totHT", panier.prixTotalHt());
         request.setAttribute("totTTC", panier.prixTotalTtc());
         request.setAttribute("totRemise", panier.getRemiseTot());
-        
-
-        if (request.getParameter("valider") != null) {
-
-        }
 
         //-----------------------FIN JULIEN------------//
         //-----------------------YAVUZ------------//
@@ -214,7 +215,6 @@ public class Controller extends HttpServlet {
 //            session.setAttribute("isconnected", false);
 //        }
         //-----------------------FIN YAVUZ------------//
-        
         if (request.getParameter("connection") != null) {
             url = "/WEB-INF/Identification.jsp";
         }
@@ -226,7 +226,7 @@ public class Controller extends HttpServlet {
         String password = request.getParameter("password");
         Connection conect = getinstance();
         int i = 1;
-        Client cl = new Client();
+        //cl = new Client();
 //            int i = cl.LoginValide(login,password, conect);
         String message = null;
         String welcome = null;
@@ -234,17 +234,19 @@ public class Controller extends HttpServlet {
         String login = "";
         if (login != null && password != null) {
             i = cl.LoginValide(request.getParameter("login"), request.getParameter("password"), conect);
-            System.out.println("cl = " +cl);
-                session.setAttribute("client", cl);
+
         }
 
+//        cl.getAdrFacture(bcApplication.Connecter());
+//        ArrayList<Adresse> adrfac = cl.getAdrFacture();
+//        request.setAttribute("adrFact", adrfac);
 //            Beans.Singleton.getinstance();
 //            Cookie cccc = getCookie(request.getCookies(), "try");
 //        if ("login".equals(request.getParameter("section"))) {
         if (request.getParameter("doIt") != null) {
             session.setAttribute("isconnected", false);
             if (i == 0) {
-                System.out.println("page vaut " + session.getAttribute("page"));
+                session.setAttribute("client", cl);
                 url = session.getAttribute("page").toString();
                 session.setAttribute("isconnected", true);
                 welcome = request.getParameter("login");
@@ -254,7 +256,6 @@ public class Controller extends HttpServlet {
                 c = new Cookie("try", "");
                 c.setMaxAge(0);
                 response.addCookie(c);
-
             } else {
                 url = "/WEB-INF/Identification.jsp";
                 request.setAttribute("user", request.getParameter("login"));
@@ -276,6 +277,18 @@ public class Controller extends HttpServlet {
                 response.addCookie(ccc);
             }
         }
+        if (request.getAttribute("adrLivr") == null) {
+            cl.getAdrLivraison(bcApplication.Connecter());
+            adrlivr = cl.getAdrLivraison();
+            request.setAttribute("adrLivr", adrlivr);
+        }
+
+        if (request.getParameter("okAdr") != null) {
+            int count = Integer.parseInt(request.getParameter("adrliv"));
+            Adresse ad = adrlivr.get(count);
+            panier.setAdrIdLivraison(ad.getAdrId());
+        }
+
         Cookie cc = getCookie(request.getCookies(), "login");
         if (cc != null) {
 
@@ -360,7 +373,7 @@ public class Controller extends HttpServlet {
                 request.setAttribute("Pwd", e.getMessage());
             }
         }
-        
+
         //----------------------FIN MOMO--------------//
         if (request.getParameter("validCom") != null) {
             if (session.getAttribute("client") != null) {
@@ -371,9 +384,7 @@ public class Controller extends HttpServlet {
                 request.setAttribute("message", "Veuillez vous connecter pour valider votre panier");
             }
         }
-        System.out.println("page vaut " + session.getAttribute("page"));
         request.getRequestDispatcher(url).include(request, response);
-
     }
 
     private Connection getinstance() {

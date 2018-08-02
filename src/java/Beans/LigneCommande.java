@@ -2,8 +2,6 @@
 package Beans;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
 
 public class LigneCommande implements Serializable{
     

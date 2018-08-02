@@ -1221,3 +1221,15 @@ input.del {
 body{
     background-color: papayawhip;
 }
+
+hr{
+    color: lightsteelblue;
+    background-color: lightsteelblue;
+}
+
+.adress{
+    display: block;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
