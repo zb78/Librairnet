@@ -67,14 +67,34 @@
                                             <p></p>
                                             <p>
                                                 ${l.etoile}
-                                                
+
                                             </p>
                                         </div>
                                         <div class="space-ten"></div>
                                         <div class="btn-ground">
-                                            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Add To Cart</button>
-                                            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart"></span> Add To Wishlist</button>
+                                            <a href="Controller?add=${l.isbn}">
+                                                <button name="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Ajouter au panier</button></a>
+                                            <a href="Controller?critique&client=${client.login}">
+                                                <button name="critique" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart"></span> Faire un commenter</button></a>
                                         </div>
+                                        <c:forEach var="cr" items="${l.critiques}">
+
+                                            <div class="media comment-box">
+
+                                                <div class="media-body">
+                                                    <h4 class="media-heading">${cr.nom} </h4>
+                                                    <p><c:if test="${!cr.videNote}">
+                                                            Note: ${cr.note}/5
+                                                            <br>
+                                                        </c:if>
+                                                        <c:if test="${!cr.videCommentaire}">
+                                                            ${cr.commentaire}
+                                                        </c:if>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </c:forEach>
                                     </div>
                                 </div>
                             </div>

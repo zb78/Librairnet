@@ -7,7 +7,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Librairnet</title>
         <%@include file="/WEB-INF/nav.jsp" %>
-        <jsp:include page="Header.jsp"></jsp:include>
         </head>
         <body>
             <div class="container">

@@ -11,7 +11,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="index.jsp">Accueil</a>
+                <a class="nav-link" href="Controller?index">Accueil</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="Controller?section=panier">Afficher le panier <span class="sr-only">(current)</span></a>
