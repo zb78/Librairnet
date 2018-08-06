@@ -29,6 +29,19 @@ public class Adresse implements Serializable{
     public Adresse() {
     }
 
+    public Adresse(int adrId,String adrNumVoie, String adrTypeVoie, String adrNomVoie, String adrCompVoie, String adrCodePostal, String adrVille, String adrPays) {
+        this.adrId = adrId;
+        this.adrNumVoie = adrNumVoie;
+        this.adrTypeVoie = adrTypeVoie;
+        this.adrNomVoie = adrNomVoie;
+        this.adrCompVoie = adrCompVoie;
+        this.adrCodePostal = adrCodePostal;
+        this.adrVille = adrVille;
+        this.adrPays = adrPays;
+    }
+    
+    
+
     public Adresse(int adrId, String adrNom, String adrPrenom, String adrNumVoie, String adrTypeVoie, String adrNomVoie, String adrCompVoie, String adrCodePostal, String adrVille, String adrPays, String adrLibele, int adrStatut) {
         this.adrId = adrId;
         this.adrNom = adrNom;

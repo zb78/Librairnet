@@ -1,6 +1,8 @@
 package Classes;
 
-public class LibExceptions extends Exception{
+import java.io.Serializable;
+
+public class LibExceptions extends Exception implements Serializable{
     private int noError;
 
     public LibExceptions(String message) {

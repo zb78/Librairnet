@@ -7,6 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Librairnet</title>
         <%@include file="/WEB-INF/nav.jsp" %>
+
         <jsp:include page="Header.jsp"></jsp:include>
         </head>
         <body>
@@ -37,8 +38,38 @@
                     <div class="col-md-2">
                         Prix TTC
                     </div>
+
+    </head>
+    <body>
+        <div class="container">
+            <h5><a style="color: black" href="Controller?all">Accueil > <a style="color: black" href="Controller?all">Catalogue</a> > <a style="color: black" href = "Controller?section=panier">Panier</a></h5>
+            <hr>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+            <link rel="stylesheet" href="css/css.css">
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+            <div class="row" style="text-align: center;display: flex;align-items:center;border-radius: 4px;">
+                <div class="col-md1">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </div>
-                <hr>
+                <div class="col-md-4">
+                    titre
+                </div>
+                <div class="col-md-2">
+                    quantité
+                </div>
+                <div class="col-md-2">
+                    prix hors taxes
+                </div>
+                <div class="col-md-1">
+                    TVA
+                </div>
+                <div class="col-md-2">
+                    Prix TTC
+                </div>
+            </div>
+            <hr>
             <c:if test="${isEmpty}">
                 <p>Le panier est vide!</p>
             </c:if>
@@ -125,9 +156,29 @@
                         </div>
                     </div>
                 </div>
-            </c:if>             
+            </c:if>        
+            <hr>
         </div>
-        <hr>
+
+        <c:if test="${isconnected}">
+            <div class="container" style="border-style: solid;border-width: 1px; border-color: lightsteelblue">
+                <div class="cboxAdresses">
+                    Vos adresses
+                    <hr>
+                    Adresse(s) de livraison <br>
+                    <form action="Controller">
+                        <select name="adrliv">
+                            <c:forEach var="ad" items="${adrLivr}" varStatus="status">
+                                <option value="${status.count}"> ${ad.adrNumVoie} ${ad.adrTypeVoie} ${ad.adrNomVoie} ${ad.adrCompVoie}
+                                    ${ad.adrCodePostal} ${ad.adrVille} ${ad.adrPays}</option>
+                                </c:forEach>
+                            <input type="submit" name="okAdr" value="OK" />
+                        </select>
+                    </form>
+                    <br>
+                </div>
+            </div>
+        </c:if>
     </body>
     <br>
     <jsp:include page="Bottom.jsp"></jsp:include>

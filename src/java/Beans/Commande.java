@@ -112,7 +112,6 @@ public class Commande implements Serializable {
         for (Map.Entry<String, LigneCommande> col : panier.entrySet()) {
             remiseTot = Math.rint((remiseTot + (col.getValue().getLigPrix() * (col.getValue().getLigRemise() / 100)) * col.getValue().getLigQuantite()) * 100) / 100;
         }
-        System.out.println(remiseTot);
         return remiseTot;
     }
 

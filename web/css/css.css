@@ -1222,7 +1222,6 @@ body{
     background-color: papayawhip;
 }
 
-
 .comment-box {
     margin-top: 30px !important;
 }
@@ -1262,4 +1261,15 @@ body{
     position: absolute;
     top: 10px;
     left: -6px;
+}
+hr{
+    color: lightsteelblue;
+    background-color: lightsteelblue;
+}
+
+.adress{
+    display: block;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
 }
