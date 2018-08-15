@@ -74,7 +74,7 @@
                                         <div class="btn-ground">
                                             <a href="Controller?add=${l.isbn}">
                                                 <button name="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Ajouter au panier</button></a>
-                                            <a href="Controller?critique&client=${client.login}">
+                                            <a href="Controller?critique&client=${client.cliLogin}&isbn=${l.isbn}">
                                                 <button name="critique" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-heart"></span> Faire un commenter</button></a>
                                         </div>
                                         <c:forEach var="cr" items="${l.critiques}">

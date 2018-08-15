@@ -40,15 +40,16 @@ public class Livre implements Serializable {
     private int idEditeur;
     private Tva taux = new Tva();
     private Evenement evt = new Evenement();
-    
+
     private String auteur;
     private String editeur;
     private ArrayList<Critique> critiques;
     private Integer moyenne;
     private String etoile;
-    
-    
 
+    private Critique critique;
+    private int note;
+    private boolean critiqueEmpty;
     //private int[] idSousTheme;
     //private Critique[] critique;
     public Livre() {
@@ -114,11 +115,11 @@ public class Livre implements Serializable {
     }
 
     public double getPrix() {
-        
+
         return prix;
     }
 
- public Livre(String isbn, double prix, int idTva, String titre, String sousTitre, String couverture, Date dateSortie, String resume, int stock, int statut, int idAuteur, int idEditeur, Tva taux) {
+    public Livre(String isbn, double prix, int idTva, String titre, String sousTitre, String couverture, Date dateSortie, String resume, int stock, int statut, int idAuteur, int idEditeur, Tva taux) {
         this.isbn = isbn;
         this.prix = prix;
         this.idTva = idTva;
@@ -632,14 +633,14 @@ public class Livre implements Serializable {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                critiques.add(new Critique(rs.getString("criCommentaire"), 
+                critiques.add(new Critique(rs.getString("criCommentaire"),
                         rs.getInt("criNote"),
-                        rs.getString("cliNom") +" "+rs.getString("cliPrenom")));
+                        rs.getString("cliNom") + " " + rs.getString("cliPrenom")));
             }
             rs.close();
             stmt.close();
         } catch (SQLException ex) {
-            System.out.println("Critique : "+ex.getMessage());;
+            System.out.println("Critique : " + ex.getMessage());;
         } finally {
             try {
                 c.close();
@@ -647,7 +648,7 @@ public class Livre implements Serializable {
                 Logger.getLogger(Livre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if(!critiques.isEmpty()){
+        if (!critiques.isEmpty()) {
             moyenne = 0;
             for (Critique critique : critiques) {
                 moyenne += critique.getNote();
@@ -658,13 +659,75 @@ public class Livre implements Serializable {
         return critiques;
     }
 
+    public Critique getCritique() {
+        return critique;
+    }
+
+    public void getCritique(Client cl, Connexion con) {
+        critiqueEmpty = true;
+        Critique myCritique =null;
+        String query = "  SELECT distinct ligId FROM LigneCommande lig "
+                + "  JOIN Commande com "
+                + "  ON lig.comNum = com.comNum"
+                + "  JOIN Client cli"
+                + "  ON com.cliId = cli.cliId"
+                + "  WHERE lig.livIsbn = ? AND com.cliId = ?";
+
+        Connection c = con.getConnection();
+
+        try {
+
+            PreparedStatement pst = c.prepareStatement(query);
+
+            pst.setString(1, isbn);
+            pst.setInt(2, cl.getCliId());
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                myCritique = new Critique(rs.getString("criComentaire"), rs.getInt("criNote"), cl.getCliNom()+" "+cl.getCliPrenom());
+                critiqueEmpty = false;
+            }
+
+            rs.close();
+            pst.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Critique.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Critique.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+
+    public void setCritique(Critique critique) {
+        this.critique = critique;
+    }
+
+    public void setCritique(String commentaire) {
+        if (this.critique == null) {
+            this.critique = new Critique();
+        }
+        this.critique.setCommentaire(commentaire);
+    }
+
+    public void setNote(int note) {
+        this.note = note;
+    }
+
+    public int getNote() {
+        return note;
+    }
+
     public String getEtoile() {
-   
         return etoile;
     }
 
-    public void setEtoile(){
-             etoile = "";
+    public void setEtoile() {
+        etoile = "";
         if (moyenne != null) {
             for (int i = 0; i < moyenne; i++) {
                 etoile += "<span class=\"glyphicon glyphicon-star\"></span>";
@@ -674,6 +737,7 @@ public class Livre implements Serializable {
             }
         }
     }
+
     private void getLivre(String isbn, Connexion con) {
         String query = "SELECT * FROM Livre WHERE livIsbn = '" + isbn + "'";
         Connection c = con.getConnection();

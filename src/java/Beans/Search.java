@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author cdi314
  */
-public class Search implements Serializable{
+public class Search implements Serializable {
 
     public static int ALL = 1;
     public static int THEME = 2;
@@ -28,7 +28,6 @@ public class Search implements Serializable{
     public static int AUTEUR = 4;
     public static int ISBN = 5;
     public static int TITRE = 6;
-    
 
     //ArrayList<Livre> search;
     HashMap<String, Livre> search;
@@ -51,15 +50,13 @@ public class Search implements Serializable{
 
     public void setSearch(int param, Connexion con) {
 
-        
         String query = "SELECT livIsbn FROM Livre";
         if (param == ALL) {
             query = "SELECT livIsbn FROM Livre";
         }
-        
-        
+
         Connection c = con.getConnection();
-        
+
         try {
             Statement stmt = c.createStatement();
 
@@ -72,20 +69,20 @@ public class Search implements Serializable{
             rs.close();
 
         } catch (SQLException ex) {
-            System.out.println("SEARCH Connection : "+ ex.getMessage()+" / "+ex.getSQLState()+" / "+ex.getErrorCode());
+            System.out.println("SEARCH Connection : " + ex.getMessage() + " / " + ex.getSQLState() + " / " + ex.getErrorCode());
         } finally {
             try {
                 c.close();
             } catch (SQLException ex) {
-                System.out.println("SEARCH close Connection : "+ ex.getMessage()+" / "+ex.getSQLState()+" / "+ex.getErrorCode());
+                System.out.println("SEARCH close Connection : " + ex.getMessage() + " / " + ex.getSQLState() + " / " + ex.getErrorCode());
             }
         }
 
     }
-    
-    public void setSearch(int param, Connexion con,String recherche) {
+
+    public void setSearch(int param, Connexion con, String recherche) {
         String query;
-        
+
         if (param == AUTEUR) {
             query = "SELECT liv.livIsbn FROM Livre liv JOIN Auteur aut "
                     + "ON liv.autId = aut.autId WHERE ";
@@ -102,7 +99,7 @@ public class Search implements Serializable{
         } else if (param == TITRE) {
             query = "SELECT liv.livIsbn FROM Livre liv WHERE ";
             query = myQuery(query, "liv.livTitre liv.livSousTitre", recherche);
-            
+
             //System.out.println(query);
         } else if (param == MOTCLE) {
             query = "SELECT liv.livIsbn FROM Livre liv "
@@ -116,7 +113,7 @@ public class Search implements Serializable{
         } else if (param == ISBN) {
             query = "SELECT liv.livIsbn FROM Livre liv WHERE ";
             query = myQuery(query, "liv.livIsbn", recherche);
-            
+
             //System.out.println(query);
         } else {
             query = "SELECT liv.livIsbn FROM Livre liv "
@@ -137,11 +134,11 @@ public class Search implements Serializable{
             query += " GROUP BY liv.livIsbn";
             //System.out.println(query);
         }
-         getFromBase(query,con);
+        getFromBase(query, con);
     }
 
-    public void getFromBase(String query,Connexion con) {
-        
+    public void getFromBase(String query, Connexion con) {
+
         Connection c = con.getConnection();
 
         try {
@@ -149,13 +146,21 @@ public class Search implements Serializable{
             ResultSet rs = st.executeQuery(query);
 
             while (rs.next()) {
-                this.add(new Livre(rs.getString("livIsbn"),con));
+                this.add(new Livre(rs.getString("livIsbn"), con));
             }
 
+            rs.close();
+            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+
     }
 
     /**
@@ -181,10 +186,39 @@ public class Search implements Serializable{
         query = sb.toString();
         return query;
     }
-    
-    public Livre getLivre(String isbn){
+
+    public Livre getLivre(String isbn) {
         Livre leLivre = this.search.get(isbn);
         return leLivre;
+    }
+
+    public void getLivresClient(int cliId, Connexion con) {
+        Connection c = con.getConnection();
+        String query = "SELECT DISTINCT liv.livIsbn FROM Livre liv "
+                + "JOIN LigneCommande lig "
+                + "ON liv.livIsbn = lig.livIsbn "
+                + "JOIN Commande com "
+                + "ON lig.comNum = com.comNum "
+                + "JOIN Client cli "
+                + "ON com.cliId = cli.cliId";
+        try {
+            Statement st = c.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                this.add(new Livre(rs.getString("livIsbn"), con));
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                c.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

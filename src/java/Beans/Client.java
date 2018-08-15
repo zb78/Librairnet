@@ -10,10 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Vector;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Client {
@@ -31,7 +29,21 @@ public class Client {
     private String Message = null;
     private Vector<Adresse> adrFacture = new Vector();
     private Vector<Adresse> adrLivraison = new Vector();
+    
+    
+    //Yavuz
+    private ArrayList<Livre> livreAchete = new ArrayList();
 
+    public ArrayList<Livre> getLivreAchete() {
+        return livreAchete;
+    }
+
+    public void setLivreAchete(ArrayList<Livre> livreAchete) {
+        this.livreAchete = livreAchete;
+    }
+
+    
+    
     public Client() {
     }
 

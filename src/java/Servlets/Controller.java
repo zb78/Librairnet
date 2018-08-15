@@ -1,4 +1,3 @@
-
 package Servlets;
 
 import Beans.BeanCatalogue;
@@ -6,15 +5,20 @@ import Beans.BeanConnexion;
 import Beans.Client;
 import Beans.Commande;
 import Beans.Connexion;
+import Beans.Critique;
 import Beans.LigneCommande;
 import Beans.Livre;
 import Beans.Search;
 import Classes.LibExceptions;
+import Exception.LibException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -49,7 +53,7 @@ public class Controller extends HttpServlet {
             session.setAttribute("isconnected", false);
         }
         Connexion con = (Connexion) this.getServletContext().getAttribute("connection");
-        if (this.getServletContext().getAttribute("connection") == null) {
+        if (con == null) {
             con = new Connexion();
             ServletContext application = this.getServletContext();
             application.setAttribute("connection", con);
@@ -64,18 +68,17 @@ public class Controller extends HttpServlet {
 
         //----------JULIEN-------------------//
         String url = "/WEB-INF/index.jsp";
-        
-        if(request.getParameter("index") != null){
+
+        if (request.getParameter("index") != null) {
             url = "/WEB-INF/index.jsp";
         }
-        
+
         if (session.getAttribute("page") == null) {
             session.setAttribute("page", "/WEB-INF/index.jsp");
         }
         if (session.getAttribute("page") == "/WEB-INF/identification.jsp") {
             session.setAttribute("page", "/WEB-INF/index.jsp");
         }
-        
 
         // String url = "WEB-INF/Catalogue.jsp";
         if ("catalogue".equals(request.getParameter("section"))) {
@@ -138,7 +141,6 @@ public class Controller extends HttpServlet {
         request.setAttribute("totHT", panier.prixTotalHt());
         request.setAttribute("totTTC", panier.prixTotalTtc());
         request.setAttribute("totRemise", panier.getRemiseTot());
-        
 
         if (request.getParameter("valider") != null) {
 
@@ -191,30 +193,58 @@ public class Controller extends HttpServlet {
 
         }
 
-//        //  CONNECTION CLIENT :::::////////
-//        if (request.getParameter("connection") != null) {
-//            url = "/WEB-INF/connection.jsp";
-//        }
-//        if (request.getParameter("connecter") != null) {
-//            url = "/WEB-INF/index.jsp";
-//            session.setAttribute("isconnect", false);
-//            Client client = (Client) session.getAttribute("client");
-//            if (client == null) {
-//                client = new Client(request.getParameter("login"), request.getParameter("password"), con);
-//
-//            }
-//            if (client.isConnected()) {
-//                session.setAttribute("client", client);
-//                session.setAttribute("isconnected", client.isConnected());
-//            }
-//        }
-//        if (request.getParameter("deconnection") != null) {
-//            url = "/WEB-INF/index.jsp";
-//            session.removeAttribute("client");
-//            session.setAttribute("isconnected", false);
-//        }
+        if (request.getParameter("identification") != null) {
+            url = "/WEB-INF/Identification.jsp";
+        }
+
+        if (request.getParameter("critique") != null) {
+            System.out.println("dans critique");
+            Livre livreACritique = new Livre(request.getParameter("isbn"), con);
+            session.setAttribute("lac", livreACritique);
+            Boolean clientisconnect = (Boolean) session.getAttribute("isconnected");
+
+            if (clientisconnect == false) {
+                session.setAttribute("fromurl", "/WEB-INF/Commentaire.jsp");
+                url = "/WEB-INF/Commentaire.jsp";
+            } else {
+                //Critique critique = new Critique(commentaire, note, nomClient);
+                url = "/WEB-INF/Identification.jsp";
+                session.setAttribute("achete", true);
+                Critique critique = new Critique();
+                Client client = (Client) session.getAttribute("client");
+
+                int ligId = critique.achatExist(livreACritique.getIsbn(), client.getCliId(), con);
+
+                if (ligId == 0) {
+                    session.setAttribute("achete", false);
+                }
+
+                if (request.getParameter("critiquebouton") != null) {
+                    session.removeAttribute("achete");
+                    critique.setCommentaire(request.getParameter("commentaire"));
+                    critique.setNote(Integer.valueOf(request.getParameter("note")));
+
+                    try {
+                        critique.insertCritique(client.getCliId(), livreACritique.getIsbn(), request.getRemoteAddr(), 253, con);
+                        session.removeAttribute("formurl");
+                    } catch (LibException ex) {
+                        session.setAttribute("erreur", ex.getMessage());
+                    }
+                }
+            }
+        }
+
+        if (request.getParameter("mesCritiques") != null) {
+            url = "/WEB-INF/MesCritiques.jsp";
+            Search mesLivreCommente = new Search();
+            Client client = (Client) session.getAttribute("client");
+            if(client != null){
+                mesLivreCommente.getLivresClient(client.getCliId(), con);
+            }
+            mesLivreCommente.getSearch();
+        }
+
         //-----------------------FIN YAVUZ------------//
-        
         if (request.getParameter("connection") != null) {
             url = "/WEB-INF/Identification.jsp";
         }
@@ -234,8 +264,8 @@ public class Controller extends HttpServlet {
         String login = "";
         if (login != null && password != null) {
             i = cl.LoginValide(request.getParameter("login"), request.getParameter("password"), conect);
-            System.out.println("cl = " +cl);
-                session.setAttribute("client", cl);
+            System.out.println("cl = " + cl);
+            session.setAttribute("client", cl);
         }
 
 //            Beans.Singleton.getinstance();
@@ -254,6 +284,14 @@ public class Controller extends HttpServlet {
                 c = new Cookie("try", "");
                 c.setMaxAge(0);
                 response.addCookie(c);
+
+                //Yavuz Le code ci-dessous sert a rediriger vert la page de critique après connection
+                // ca n'interfert pas. Si je vient de la page critique ça renvoi
+                String fromUrl = (String) session.getAttribute("fromurl");
+                if (fromUrl != null) {
+                    url = fromUrl;
+
+                }
 
             } else {
                 url = "/WEB-INF/Identification.jsp";
@@ -360,7 +398,7 @@ public class Controller extends HttpServlet {
                 request.setAttribute("Pwd", e.getMessage());
             }
         }
-        
+
         //----------------------FIN MOMO--------------//
         if (request.getParameter("validCom") != null) {
             if (session.getAttribute("client") != null) {
@@ -371,7 +409,8 @@ public class Controller extends HttpServlet {
                 request.setAttribute("message", "Veuillez vous connecter pour valider votre panier");
             }
         }
-        System.out.println("page vaut " + session.getAttribute("page"));
+        //System.out.println("page vaut " + session.getAttribute("page"));
+        System.out.println(url);
         request.getRequestDispatcher(url).include(request, response);
 
     }
